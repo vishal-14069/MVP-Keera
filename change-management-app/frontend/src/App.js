@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import AskQuestion from './AskQuestion';
-import NewEnterCode from './NewEnterCode';
+import EnterCode from './EnterCode';
 import SubmitResponse from './SubmitResponse';
+import AdminPage from './AdminPage';
 import './App.css';
 
 function App() {
@@ -25,8 +26,10 @@ function App() {
         <main>
           <Switch>
             <Route path="/ask" component={AskQuestion} />
-            <Route path="/enter-code" component={NewEnterCode} />
-            <Route path="/respond/:code" component={SubmitResponse} />
+            <Route path="/enter-code" component={EnterCode} />
+            <Route path="/submit/:code" component={SubmitResponse} />
+            <Route path="/admin/:code" component={AdminPage} />
+            <Route path="/admin" component={AdminPage} />
           </Switch>
         </main>
       </div>
