@@ -1,41 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
-function SubmitResponse() {
-  const { code } = useParams();
-  const [questions, setQuestions] = useState([]);
-  const [responses, setResponses] = useState([]);
-  const [insights, setInsights] = useState('');
-  const [sentiment, setSentiment] = useState('');
-
-  useEffect(() => {
-    // Fetch the questions using the code
-    const fetchQuestions = async () => {
-      console.log('Fetching questions for code:', code);
-      try {
-        const response = await fetch(`http://localhost:5001/api/questions/${code}`, {
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
-          },
-        });
-        console.log('Response status:', response.status);
-        if (!response.ok) {
-          console.error('Failed to fetch questions:', response.statusText);
-          return;
-        }
-        const data = await response.json();
-        console.log('Response data:', data);
-        setQuestions(data.questions);
-        setResponses(new Array(data.questions.length).fill(''));
-      } catch (error) {
-        console.error('Error during fetch:', error);
-      }
+class SubmitResponse extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      questions: [],
+      responses: [],
+      submissionStatus: null, // New state variable for submission status
     };
-    fetchQuestions();
-  }, [code]);
+  }
 
-  const handleSubmit = async (e) => {
+  componentDidMount() {
+    const { code } = this.props.match.params;
+    this.fetchQuestions(code);
+  }
+
+  fetchQuestions = async (code) => {
+    console.log('Fetching questions for code:', code);
+    try {
+      const response = await fetch(`http://localhost:5001/api/questions/${code}`, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
+        },
+      });
+      console.log('Response status:', response.status);
+      if (!response.ok) {
+        console.error('Failed to fetch questions:', response.statusText);
+        return;
+      }
+      const data = await response.json();
+      console.log('Response data:', data);
+      this.setState({
+        questions: data.questions,
+        responses: new Array(data.questions.length).fill('')
+      });
+    } catch (error) {
+      console.error('Error during fetch:', error);
+    }
+  };
+
+  handleSubmit = async (e) => {
     e.preventDefault();
+    const { code } = this.props.match.params;
+    const { responses } = this.state;
     console.log('Submitting responses:', responses);
     try {
       const response = await fetch('http://localhost:5001/api/insights', {
@@ -48,43 +56,46 @@ function SubmitResponse() {
       });
       console.log('Response status:', response.status);
       if (!response.ok) {
-        console.error('Failed to fetch insights:', response.statusText);
+        console.error('Failed to submit responses:', response.statusText);
+        this.setState({ submissionStatus: 'Failed to submit responses' }); // Update status on failure
         return;
       }
       const data = await response.json();
       console.log('Response data:', data);
-      setInsights(data.insights);
-      setSentiment(data.sentiment);
+      this.setState({ submissionStatus: 'Responses submitted successfully!' }); // Update status on success
     } catch (error) {
       console.error('Error during fetch:', error);
+      this.setState({ submissionStatus: 'Error during submission' }); // Update status on error
     }
   };
 
-  const handleResponseChange = (index, value) => {
-    const newResponses = [...responses];
+  handleResponseChange = (index, value) => {
+    const newResponses = [...this.state.responses];
     newResponses[index] = value;
-    setResponses(newResponses);
+    this.setState({ responses: newResponses });
   };
 
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        {questions.map((question, index) => (
-          <div key={index}>
-            <p>{question}</p>
-            <textarea
-              value={responses[index]}
-              onChange={(e) => handleResponseChange(index, e.target.value)}
-              placeholder="Your response..."
-            />
-          </div>
-        ))}
-        <button type="submit">Submit Responses</button>
-      </form>
-      {insights && <p>Insights: {insights}</p>}
-      {sentiment && <p>Sentiment: {sentiment}</p>}
-    </div>
-  );
+  render() {
+    const { questions, responses, submissionStatus } = this.state;
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          {questions.map((question, index) => (
+            <div key={index}>
+              <p>{question}</p>
+              <textarea
+                value={responses[index]}
+                onChange={(e) => this.handleResponseChange(index, e.target.value)}
+                placeholder="Your response..."
+              />
+            </div>
+          ))}
+          <button type="submit">Submit Responses</button>
+        </form>
+        {submissionStatus && <p>{submissionStatus}</p>} {/* Display submission status */}
+      </div>
+    );
+  }
 }
 
-export default SubmitResponse;
+export default withRouter(SubmitResponse);
