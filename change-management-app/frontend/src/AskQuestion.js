@@ -6,20 +6,27 @@ function AskQuestion() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Call your backend API to save the questions and generate a unique code
-    const response = await fetch('http://localhost:5000/api/questions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ questions }),
-    });
-    if (!response.ok) {
-      console.error('Failed to save questions:', response.statusText);
-      return;
+    console.log('Submitting questions:', questions);
+    try {
+      const response = await fetch('http://localhost:5001/api/questions', { // Correct URL
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
+        },
+        body: JSON.stringify({ questions }),
+      });
+      console.log('Response status:', response.status);
+      if (!response.ok) {
+        console.error('Failed to save questions:', response.statusText);
+        return;
+      }
+      const data = await response.json();
+      console.log('Response data:', data);
+      setCode(data.code);
+    } catch (error) {
+      console.error('Error during fetch:', error);
     }
-    const data = await response.json();
-    setCode(data.code);
   };
 
   const handleQuestionChange = (index, value) => {
@@ -44,8 +51,7 @@ function AskQuestion() {
       </form>
       {code && (
         <div>
-          <p>Share this code with the interviewee: {code}</p>
-          <p>Or share this URL: {window.location.origin}/respond/{code}</p>
+          <p>Share this code with the interviewee: <strong>{code}</strong></p>
         </div>
       )}
     </div>

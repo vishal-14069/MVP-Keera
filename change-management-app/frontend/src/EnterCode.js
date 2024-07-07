@@ -1,26 +1,17 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
+import { withRouter } from 'react-router-dom';
 
-function EnterCode() {
-  const [code, setCode] = useState('');
-  const history = useHistory();
-
+function EnterCode({ history }) {
   const handleSubmit = (e) => {
     e.preventDefault();
-    history.push(`/respond/${code}`);
+    history.push('/respond/test');
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        placeholder="Enter code..."
-      />
       <button type="submit">Submit</button>
     </form>
   );
 }
 
-export default EnterCode;
+export default withRouter(EnterCode);
