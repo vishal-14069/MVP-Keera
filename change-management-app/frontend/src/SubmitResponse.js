@@ -1,22 +1,17 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-class SubmitResponse extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      questions: [],
-      responses: [],
-      submissionStatus: null, // New state variable for submission status
-    };
-  }
+const SubmitResponse = () => {
+  const { code } = useParams();
+  const [questions, setQuestions] = useState([]);
+  const [responses, setResponses] = useState([]);
+  const [submissionStatus, setSubmissionStatus] = useState(null);
 
-  componentDidMount() {
-    const { code } = this.props.match.params;
-    this.fetchQuestions(code);
-  }
+  useEffect(() => {
+    fetchQuestions(code);
+  }, [code]);
 
-  fetchQuestions = async (code) => {
+  const fetchQuestions = async (code) => {
     console.log('Fetching questions for code:', code);
     try {
       const response = await fetch(`http://localhost:5001/api/questions/${code}`, {
@@ -31,19 +26,15 @@ class SubmitResponse extends Component {
       }
       const data = await response.json();
       console.log('Response data:', data);
-      this.setState({
-        questions: data.questions,
-        responses: new Array(data.questions.length).fill('')
-      });
+      setQuestions(data.questions);
+      setResponses(new Array(data.questions.length).fill(''));
     } catch (error) {
       console.error('Error during fetch:', error);
     }
   };
 
-  handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { code } = this.props.match.params;
-    const { responses } = this.state;
     console.log('Submitting responses:', responses);
     try {
       const response = await fetch('http://localhost:5001/api/insights', {
@@ -57,45 +48,42 @@ class SubmitResponse extends Component {
       console.log('Response status:', response.status);
       if (!response.ok) {
         console.error('Failed to submit responses:', response.statusText);
-        this.setState({ submissionStatus: 'Failed to submit responses' }); // Update status on failure
+        setSubmissionStatus('Failed to submit responses'); // Update status on failure
         return;
       }
       const data = await response.json();
       console.log('Response data:', data);
-      this.setState({ submissionStatus: 'Responses submitted successfully!' }); // Update status on success
+      setSubmissionStatus('Responses submitted successfully!'); // Update status on success
     } catch (error) {
       console.error('Error during fetch:', error);
-      this.setState({ submissionStatus: 'Error during submission' }); // Update status on error
+      setSubmissionStatus('Error during submission'); // Update status on error
     }
   };
 
-  handleResponseChange = (index, value) => {
-    const newResponses = [...this.state.responses];
+  const handleResponseChange = (index, value) => {
+    const newResponses = [...responses];
     newResponses[index] = value;
-    this.setState({ responses: newResponses });
+    setResponses(newResponses);
   };
 
-  render() {
-    const { questions, responses, submissionStatus } = this.state;
-    return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          {questions.map((question, index) => (
-            <div key={index}>
-              <p>{question}</p>
-              <textarea
-                value={responses[index]}
-                onChange={(e) => this.handleResponseChange(index, e.target.value)}
-                placeholder="Your response..."
-              />
-            </div>
-          ))}
-          <button type="submit">Submit Responses</button>
-        </form>
-        {submissionStatus && <p>{submissionStatus}</p>} {/* Display submission status */}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        {questions.map((question, index) => (
+          <div key={index}>
+            <p>{question}</p>
+            <textarea
+              value={responses[index]}
+              onChange={(e) => handleResponseChange(index, e.target.value)}
+              placeholder="Your response..."
+            />
+          </div>
+        ))}
+        <button type="submit">Submit Responses</button>
+      </form>
+      {submissionStatus && <p>{submissionStatus}</p>} {/* Display submission status */}
+    </div>
+  );
+};
 
-export default withRouter(SubmitResponse);
+export default SubmitResponse;
