@@ -20,7 +20,7 @@ class AdminPage extends Component {
   fetchResponses = async (code) => {
     console.log('Fetching responses for code:', code);
     try {
-      const response = await fetch(`${API_URL}/responses/${code}`, {
+      const response = await fetch(`${API_URL}responses/${code}`, {
         headers: {
           'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
         },
