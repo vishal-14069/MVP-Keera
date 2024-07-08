@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+const API_URL = process.env.REACT_APP_API_URL || '/api';
 class AdminPage extends Component {
   constructor(props) {
     super(props);
@@ -20,7 +20,7 @@ class AdminPage extends Component {
   fetchResponses = async (code) => {
     console.log('Fetching responses for code:', code);
     try {
-      const response = await fetch(`http://localhost:5001/api/responses/${code}`, {
+      const response = await fetch(`${API_URL}/responses/${code}`, {
         headers: {
           'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
         },

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+const API_URL = process.env.REACT_APP_API_URL || '/api';
 function AskQuestion() {
   const [questions, setQuestions] = useState(['', '']);
   const [code, setCode] = useState('');
@@ -10,7 +10,7 @@ function AskQuestion() {
     e.preventDefault();
     console.log('Submitting questions:', questions);
     try {
-      const response = await fetch('http://localhost:5001/api/questions', { // Correct URL
+      const response = await fetch(`${API_URL}/questions`, { // Correct URL
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-
+const API_URL = process.env.REACT_APP_API_URL || '/api';
 const SubmitResponse = () => {
   const { code } = useParams();
   const [questions, setQuestions] = useState([]);
@@ -14,7 +14,7 @@ const SubmitResponse = () => {
   const fetchQuestions = async (code) => {
     console.log('Fetching questions for code:', code);
     try {
-      const response = await fetch(`http://localhost:5001/api/questions/${code}`, {
+      const response = await fetch(`${API_URL}/questions/${code}`, {
         headers: {
           'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
         },
@@ -37,7 +37,7 @@ const SubmitResponse = () => {
     e.preventDefault();
     console.log('Submitting responses:', responses);
     try {
-      const response = await fetch('http://localhost:5001/api/insights', {
+      const response = await fetch(`${API_URL}/insights`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
