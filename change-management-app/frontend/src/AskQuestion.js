@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function AskQuestion() {
   const [questions, setQuestions] = useState(['', '']);
   const [code, setCode] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,6 +26,7 @@ function AskQuestion() {
       const data = await response.json();
       console.log('Response data:', data);
       setCode(data.code);
+      navigate('/some-path'); // Navigate to some path after submission
     } catch (error) {
       console.error('Error during fetch:', error);
     }
