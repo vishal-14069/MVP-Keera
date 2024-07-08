@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5001; // Changed port to 5001
 
 // Adding CORS middleware with specific settings
 app.use(cors({
-  origin: 'https://change-management-backend-df3a3c4ee29f.herokuapp.com/', // Allow only your frontend origin
+  origin: '*', // Allow only your frontend origin
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // Allow cookies to be sent
 }));
@@ -20,7 +20,7 @@ app.use(cors({
 // Adding explicit CORS headers to handle preflight requests
 app.use((req, res, next) => {
   console.log('CORS middleware hit');
-  res.header('Access-Control-Allow-Origin', 'https://change-management-backend-df3a3c4ee29f.herokuapp.com/'); // Allow only your frontend origin
+  res.header('Access-Control-Allow-Origin', '*'); // Allow only your frontend origin
   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   next();
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 
 app.options('*', (req, res) => {
   console.log('OPTIONS request hit');
-  res.header('Access-Control-Allow-Origin', 'https://change-management-backend-df3a3c4ee29f.herokuapp.com/'); // Allow only your frontend origin
+  res.header('Access-Control-Allow-Origin', '*'); // Allow only your frontend origin
   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.sendStatus(200);
