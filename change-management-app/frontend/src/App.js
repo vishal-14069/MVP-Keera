@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import AskQuestion from './AskQuestion';
 import EnterCode from './EnterCode';
 import SubmitResponse from './SubmitResponse';
@@ -24,13 +24,13 @@ function App() {
           </nav>
         </header>
         <main>
-          <Switch>
-            <Route path="/ask" component={AskQuestion} />
-            <Route path="/enter-code" component={EnterCode} />
-            <Route path="/submit/:code" component={SubmitResponse} />
-            <Route path="/admin/:code" component={AdminPage} />
-            <Route path="/admin" component={AdminPage} />
-          </Switch>
+          <Routes>
+            <Route path="/ask" element={<AskQuestion />} />
+            <Route path="/enter-code" element={<EnterCode />} />
+            <Route path="/submit/:code" element={<SubmitResponse />} />
+            <Route path="/admin/:code" element={<AdminPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+          </Routes>
         </main>
       </div>
     </Router>
@@ -38,3 +38,4 @@ function App() {
 }
 
 export default App;
+
