@@ -1,36 +1,30 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-class EnterCode extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      code: ''
-    };
-  }
+const EnterCode = () => {
+  const [code, setCode] = useState('');
+  const navigate = useNavigate();
 
-  handleChange = (e) => {
-    this.setState({ code: e.target.value });
+  const handleChange = (e) => {
+    setCode(e.target.value);
   };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    this.props.history.push(`/submit/${this.state.code}`);
+    navigate(`/submit/${code}`);
   };
 
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input
-          type="text"
-          value={this.state.code}
-          onChange={this.handleChange}
-          placeholder="Enter code"
-        />
-        <button type="submit">Submit</button>
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={code}
+        onChange={handleChange}
+        placeholder="Enter code"
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
 
-export default withRouter(EnterCode);
+export default EnterCode;
