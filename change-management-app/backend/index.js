@@ -101,5 +101,5 @@ app.get('/api/responses/:code', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Backend server is running on port ${PORT}`);
 });
