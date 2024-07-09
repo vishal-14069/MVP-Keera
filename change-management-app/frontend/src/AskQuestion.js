@@ -26,7 +26,6 @@ function AskQuestion() {
       const data = await response.json();
       console.log('Response data:', data);
       setCode(data.code);
-      navigate('/some-path'); // Navigate to some path after submission
     } catch (error) {
       console.error('Error during fetch:', error);
     }
