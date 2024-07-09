@@ -14,14 +14,15 @@ const SubmitResponse = () => {
   const fetchQuestions = async (code) => {
     console.log('Fetching questions for code:', code);
     try {
-      const response = await fetch(`${API_URL}/api/questions/${code}`, {
+      const response = await fetch(`${API_URL}api/questions/${code}`, {
         headers: {
-          'X-Requested-With': 'XMLHttpRequest',
+          'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
         },
       });
       console.log('Response status:', response.status);
       if (!response.ok) {
-        throw new Error(`Failed to fetch questions: ${response.statusText}`);
+        console.error('Failed to fetch questions:', response.statusText);
+        return;
       }
       const data = await response.json();
       console.log('Response data:', data);
@@ -29,34 +30,33 @@ const SubmitResponse = () => {
       setResponses(new Array(data.questions.length).fill(''));
     } catch (error) {
       console.error('Error during fetch:', error);
-      setSubmissionStatus(`Error fetching questions: ${error.message}`);
     }
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Submitting responses:', responses);
-    try {
-      const response = await fetch(`${API_URL}/api/responses/${code}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        body: JSON.stringify({ responses }),
-      });
-      console.log('Response status:', response.status);
-      if (!response.ok) {
-        throw new Error(`Failed to submit responses: ${response.statusText}`);
-      }
-      const data = await response.json();
-      console.log('Response data:', data);
-      setSubmissionStatus('Responses submitted successfully!');
-    } catch (error) {
-      console.error('Error during fetch:', error);
-      setSubmissionStatus(`Error during submission: ${error.message}`);
+  e.preventDefault();
+  console.log('Submitting responses:', responses);
+  try {
+    const response = await fetch(`${API_URL}/api/responses/${code}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: JSON.stringify({ responses }),
+    });
+    console.log('Response status:', response.status);
+    if (!response.ok) {
+      throw new Error(`Failed to submit responses: ${response.statusText}`);
     }
-  };
+    const data = await response.json();
+    console.log('Response data:', data);
+    setSubmissionStatus('Responses submitted successfully!');
+  } catch (error) {
+    console.error('Error during fetch:', error);
+    setSubmissionStatus(`Error during submission: ${error.message}`);
+  }
+};
 
   const handleResponseChange = (index, value) => {
     const newResponses = [...responses];
