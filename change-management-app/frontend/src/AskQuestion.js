@@ -12,7 +12,7 @@ function AskQuestion() {
     setError('');
     console.log('Submitting questions:', questions);
     try {
-      const response = await fetch(`${API_URL}/api/questions`, {
+      const response = await fetch(`${API_URL}api/questions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
