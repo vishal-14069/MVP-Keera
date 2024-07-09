@@ -85,19 +85,19 @@ app.post('/api/insights', (req, res) => {
 });
 
 // Endpoint to fetch all responses for a given code
-app.post('/api/responses/:code', (req, res) => {
-  console.log('Received POST /api/responses/:code');
+app.get('/api/responses/:code', (req, res) => {
+  console.log('Received GET /api/responses/:code');
   const { code } = req.params;
-  const { responses } = req.body;
-  console.log(`Submitting responses for code: ${code}`, responses);
-  
-  if (!responsesStore[code]) {
-    responsesStore[code] = [];
+  console.log(`Looking for responses with code: ${code}`);
+  console.log('Current responsesStore:', responsesStore); // Log the entire store
+  const responses = responsesStore[code];
+  if (responses) {
+    console.log(`Found responses for code ${code}:`, responses);
+    res.json({ responses });
+  } else {
+    console.log(`No responses found for code ${code}`);
+    res.status(404).json({ error: 'Responses not found' });
   }
-  responsesStore[code].push(responses);
-  
-  console.log(`Responses stored for code ${code}:`, responsesStore[code]);
-  res.json({ message: 'Responses submitted successfully' });
 });
 
 app.listen(PORT, () => {
