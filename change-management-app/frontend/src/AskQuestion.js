@@ -20,8 +20,9 @@ function AskQuestion() {
       });
       console.log('Response status:', response.status);
       if (!response.ok) {
-        console.error('Failed to save questions:', response.statusText);
-        return;
+        return response.text().then(text => {
+          throw new Error(`Status: ${response.status}, Message: ${text}`);
+        });
       }
       const data = await response.json();
       console.log('Response data:', data);
