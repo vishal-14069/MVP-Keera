@@ -1,33 +1,35 @@
 import React, { useState } from 'react';
 
 const API_URL = process.env.REACT_APP_API_URL || '/api';
+
 function AskQuestion() {
   const [questions, setQuestions] = useState(['', '']);
   const [code, setCode] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission
+    setError('');
     console.log('Submitting questions:', questions);
     try {
-      const response = await fetch(`${API_URL}api/questions`, { // Correct URL
+      const response = await fetch(`${API_URL}/api/questions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
         },
         body: JSON.stringify({ questions }),
       });
-      console.log('Response status:', response.status);
+
       if (!response.ok) {
-        return response.text().then(text => {
-          throw new Error(`Status: ${response.status}, Message: ${text}`);
-        });
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       const data = await response.json();
       console.log('Response data:', data);
-      setCode(data.code);
+      setCode(data.code); // Set the code in state
     } catch (error) {
-      console.error('Error during fetch:', error);
+      console.error('Error submitting questions:', error);
+      setError(error.message);
     }
   };
 
@@ -39,6 +41,7 @@ function AskQuestion() {
 
   return (
     <div>
+      <h1>Decision Loop</h1>
       <form onSubmit={handleSubmit}>
         {questions.map((question, index) => (
           <input
@@ -51,6 +54,7 @@ function AskQuestion() {
         ))}
         <button type="submit">Submit Questions</button>
       </form>
+      {error && <p style={{color: 'red'}}>{error}</p>}
       {code && (
         <div>
           <p>Share this code with the interviewee: <strong>{code}</strong></p>
