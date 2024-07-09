@@ -14,7 +14,7 @@ const SubmitResponse = () => {
   const fetchQuestions = async (code) => {
     console.log('Fetching questions for code:', code);
     try {
-      const response = await fetch(`${API_URL}questions/${code}`, {
+      const response = await fetch(`${API_URL}api/questions/${code}`, {
         headers: {
           'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
         },
@@ -37,7 +37,7 @@ const SubmitResponse = () => {
     e.preventDefault();
     console.log('Submitting responses:', responses);
     try {
-      const response = await fetch(`${API_URL}/insights`, {
+      const response = await fetch(`${API_URL}api/insights`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

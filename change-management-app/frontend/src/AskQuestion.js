@@ -10,7 +10,7 @@ function AskQuestion() {
     e.preventDefault();
     console.log('Submitting questions:', questions);
     try {
-      const response = await fetch(`${API_URL}questions`, { // Correct URL
+      const response = await fetch(`${API_URL}api/questions`, { // Correct URL
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

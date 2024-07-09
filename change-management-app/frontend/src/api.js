@@ -2,7 +2,7 @@ const API_URL = process.env.REACT_APP_API_URL || '/api'; // Use relative path fo
 
 export const submitQuestion = async (question) => {
   try {
-    const response = await fetch(`${API_URL}/questions`, {
+    const response = await fetch(`${API_URL}api/questions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
